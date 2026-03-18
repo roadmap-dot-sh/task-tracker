@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Tracker · mockup</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          sans-serif;
+      }
+      body {
+        background: linear-gradient(145deg, #f6f9fc 0%, #e9f2f9 100%);
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+      }
+      .tracker-card {
+        max-width: 700px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 2rem;
+        box-shadow:
+          0 20px 35px -8px rgba(0, 20, 40, 0.25),
+          0 0 0 1px rgba(156, 188, 226, 0.3);
+        padding: 2rem 1.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+      h1 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        margin: 0 0 0.25rem 0;
+        color: #1a3b5d;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      h1 span {
+        background: #d0e0f0;
+        font-size: 1rem;
+        padding: 0.2rem 1rem;
+        border-radius: 40px;
+        font-weight: 400;
+        color: #1e4a76;
+        margin-left: 0.75rem;
+      }
+      .input-area {
+        display: flex;
+        gap: 0.6rem;
+        margin: 1.5rem 0 2rem 0;
+        background: white;
+        padding: 0.4rem 0.4rem 0.4rem 1.2rem;
+        border-radius: 60px;
+        box-shadow: 0 4px 10px rgba(0, 30, 50, 0.1);
+        border: 1px solid #cbdbe9;
+      }
+      .input-area input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 1.1rem;
+        padding: 0.7rem 0;
+        color: #1d3b5c;
+      }
+      .input-area input::placeholder {
+        color: #98b1c9;
+        font-weight: 350;
+        letter-spacing: 0.2px;
+      }
+      .input-area button {
+        background: #1e4a76;
+        border: none;
+        color: white;
+        font-weight: 500;
+        font-size: 1rem;
+        padding: 0.6rem 2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.15s;
+        border: 1px solid #ffffff50;
+        letter-spacing: 0.3px;
+        box-shadow: 0 2px 5px #0f2c41;
+      }
+      .input-area button:hover {
+        background: #143857;
+        transform: scale(1.02);
+      }
+      .input-area button:active {
+        background: #0e263b;
+        transform: scale(0.98);
+      }
+      .task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border-radius: 1.5rem;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(4px);
+        border: 1px solid #ffffff70;
+        overflow: hidden;
+      }
+      .task-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.9rem 1.5rem 0.9rem 1.2rem;
+        background: white;
+        border-bottom: 1px solid #e2eaf2;
+        transition: background 0.2s;
+      }
+      .task-item:last-child {
+        border-bottom: none;
+      }
+      .task-item:hover {
+        background: #f5faff;
+      }
+      /* custom checkbox */
+      .task-check {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 1.6rem;
+        height: 1.6rem;
+        border: 2px solid #2d5f91;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.1s;
+        flex-shrink: 0;
+      }
+      .task-check:checked {
+        background: #1e4a76;
+        border-color: #1e4a76;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+        background-size: 0.9rem;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .task-text {
+        flex: 1;
+        font-size: 1.2rem;
+        color: #1b344b;
+        word-break: break-word;
+        padding: 0.1rem 0;
+        transition: all 0.2s;
+      }
+      /* strikethrough for completed tasks */
+      .task-item.completed .task-text {
+        text-decoration: line-through;
+        text-decoration-color: #6082a5;
+        text-decoration-thickness: 2px;
+        color: #7b95af;
+      }
+      .delete-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: #b0c9de;
+        cursor: pointer;
+        padding: 0 0.2rem;
+        transition: 0.15s;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+      }
+      .delete-btn:hover {
+        background: #f0f0f0;
+        color: #c0392b;
+        transform: scale(1.1);
+      }
+      .delete-btn:active {
+        background: #e0e0e0;
+        color: #a8231a;
+      }
+      .empty-message {
+        text-align: center;
+        color: #819eb9;
+        padding: 2.5rem 1rem;
+        font-style: italic;
+        font-size: 1.2rem;
+        background: #f2f8ff;
+      }
+      /* small hint under header */
+      .mock-hint {
+        font-size: 0.95rem;
+        color: #457197;
+        margin-top: 0.1rem;
+        margin-bottom: 0.6rem;
+        padding-left: 0.3rem;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%233f6a92" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>')
+          no-repeat left center;
+        background-size: 16px;
+        padding-left: 1.6rem;
+      }
+      .footer-note {
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        text-align: right;
+        color: #6f8aa8;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tracker-card">
+      <h1>✓ Task Tracker <span>mockup</span></h1>
+      <div class="mock-hint">
+        pending ⇢ complete (strikethrough + end) — unmark to return
+      </div>
+
+      <!-- Input row exactly like "Start writing and press enter to create task" -->
+      <div class="input-area">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Start writing and press enter to create task"
+          autofocus />
+        <button id="addTaskBtn">Add</button>
+      </div>
+
+      <!-- Dynamic task list will be injected here -->
+      <ul class="task-list" id="taskListContainer">
+        <!-- initially empty, filled by JS with default examples from mockup -->
+      </ul>
+      <div class="footer-note">
+        ✔ click checkbox → toggle complete • ✖ delete
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // ----- Task storage (array of objects) -----
+        let tasks = [];
+
+        // ----- DOM elements -----
+        const taskInput = document.getElementById("taskInput");
+        const addBtn = document.getElementById("addTaskBtn");
+        const taskListEl = document.getElementById("taskListContainer");
+
+        // ----- Helper: generate unique id (simple counter) -----
+        let nextId = 100; // start from 100 to avoid collision with preset indices
+        function generateId() {
+          return `task-${nextId++}`;
+        }
+
+        // ----- Load default mockup tasks exactly as described in image -----
+        function initializeDefaultTasks() {
+          tasks = [
+            {
+              id: generateId(),
+              description: "New task is created and added to the list",
+              completed: false,
+            },
+            {
+              id: generateId(),
+              description: "Clicking the checkbox toggles the completeness",
+              completed: false,
+            },
+            {
+              id: generateId(),
+              description: "Delete button will delete the task from the list",
+              completed: false,
+            },
+            {
+              id: generateId(),
+              description: "Complete tasks show at the end with strikethrough",
+              completed: false,
+            },
+            {
+              id: generateId(),
+              description:
+                "Marking incomplete will put it back in pending list",
+              completed: false,
+            },
+          ];
+          // but we also want first three as default, and last two – all present. perfect.
+        }
+
+        // ----- renderTasks: clears DOM and re-renders based on tasks array (sorted: pending then completed) -----
+        function renderTasks() {
+          // Remove all children from taskListEl
+          while (taskListEl.firstChild) {
+            taskListEl.removeChild(taskListEl.firstChild);
+          }
+
+          // If no tasks, show a friendly empty message
+          if (tasks.length === 0) {
+            const emptyLi = document.createElement("li");
+            emptyLi.className = "empty-message";
+            emptyLi.textContent = "✨ no tasks — start writing above";
+            taskListEl.appendChild(emptyLi);
+            return;
+          }
+
+          // 1. Separate pending (completed: false) and completed (completed: true)
+          const pendingTasks = tasks.filter((t) => !t.completed);
+          const completedTasks = tasks.filter((t) => t.completed);
+
+          // 2. Build combined array: all pending first, then completed (order inside groups preserved by filter order)
+          const sortedTasks = [...pendingTasks, ...completedTasks];
+
+          // 3. Create <li> for each task
+          sortedTasks.forEach((task) => {
+            const li = document.createElement("li");
+            li.className = "task-item";
+            if (task.completed) {
+              li.classList.add("completed");
+            }
+            li.dataset.taskId = task.id; // store id for events
+
+            // Checkbox
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "task-check";
+            checkbox.checked = task.completed; // completed = true => checked
+            checkbox.setAttribute("aria-label", "Toggle completion");
+
+            // Task text span
+            const textSpan = document.createElement("span");
+            textSpan.className = "task-text";
+            textSpan.textContent = task.description;
+
+            // Delete button
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.innerHTML = "✕"; // multiplication sign
+            delBtn.setAttribute("aria-label", "Delete task");
+
+            // Assemble
+            li.appendChild(checkbox);
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
+
+            // ----- Event: toggle completeness (checkbox change) -----
+            checkbox.addEventListener("change", (e) => {
+              // stop event from bubbling weirdly, but not strictly necessary
+              e.stopPropagation();
+              // find task by id
+              const taskId = li.dataset.taskId;
+              const targetTask = tasks.find((t) => t.id === taskId);
+              if (targetTask) {
+                // toggle completed status
+                targetTask.completed = checkbox.checked; // new checkbox state = desired completed
+                // Re-render everything to respect order (pending first, completed at end)
+                renderTasks();
+              }
+            });
+
+            // ----- Event: delete task -----
+            delBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const taskId = li.dataset.taskId;
+              // filter out the task with that id
+              tasks = tasks.filter((t) => t.id !== taskId);
+              renderTasks(); // re-render (if empty shows empty message)
+            });
+
+            taskListEl.appendChild(li);
+          });
+        }
+
+        // ----- function to add a new task (from input) -----
+        function addNewTask() {
+          const rawText = taskInput.value.trim();
+          if (rawText === "") {
+            // optional: subtle alert or just ignore
+            taskInput.style.border = "2px solid #e03a3a";
+            setTimeout(() => (taskInput.style.border = ""), 200);
+            return;
+          }
+          // create new task object: pending by default (completed: false)
+          const newTask = {
+            id: generateId(),
+            description: rawText,
+            completed: false,
+          };
+          tasks.push(newTask);
+          taskInput.value = ""; // clear input
+          taskInput.focus();
+          renderTasks(); // re-render (new pending will be at top, thanks to sort)
+        }
+
+        // ----- Event listeners for adding tasks -----
+        addBtn.addEventListener("click", addNewTask);
+
+        taskInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault(); // prevent any form-like behaviour
+            addNewTask();
+          }
+        });
+
+        // minor UX: remove red border when typing
+        taskInput.addEventListener("input", () => {
+          taskInput.style.border = "";
+        });
+
+        // ----- initial seeding: load default tasks from mockup -----
+        initializeDefaultTasks();
+
+        // ----- first render -----
+        renderTasks();
+
+        // (optional) example: if you need to see that completed tasks go to end,
+        // you can programmatically mark third task as completed? but we leave it interactive.
+        // For demonstration, we could set the last two as completed to visually show order.
+        // But the mockup expects them to be pending at start. So keep all false.
+        // However, to illustrate "Complete tasks show at the end with strikethrough",
+        // let's make the fourth task completed initially, so users immediately see the behaviour.
+        // But mockup shows them all unchecked? But description says 'Complete tasks show at the end'.
+        // Better to have a mixed example, so I'll set task 4 (index 3) to completed = true for demo.
+        // This aligns with the text: 'Complete tasks show at the end' – so at least one completed.
+        // adjust:
+        tasks[3].completed = true; // "Complete tasks show at the end with strikethrough" becomes completed
+        tasks[4].completed = false; // "Marking incomplete will put it back" — stays pending, but we also keep it.
+        // but wait: the fifth description says "Marking in complete will put it back in pending list", it can be pending.
+        // also we want second last as completed to show strikethrough at end.
+        // optional: task[2] (delete button demo) keep pending.
+        // Re-render after tweak:
+        renderTasks();
+
+        // to be extra safe with order, we call renderTasks again (already called, but fine)
+        // ensure the completed ones appear after pending.
+        // Also the initial description list: user sees two completed tasks at bottom.
+        // That's fine.
+
+        // one more: set the third bullet's description accurate: but we already have all.
+      })();
+    </script>
+  </body>
+</html>
